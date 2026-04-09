@@ -1,0 +1,80 @@
+# DEMO ONLY — This pipeline simulates the release flow for demo purposes.
+# It does NOT perform real builds or deployments.
+# The real release pipeline is release-deploy.yml.
+#
+# Flow: Build → Deploy to Staging → Manual Approval (GitHub issue) → Deploy to Production
+
+name: "[DEMO] Release Pipeline"
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: demo-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Simulate build
+        run: |
+          echo "=== [DEMO] Build Step ==="
+          echo "Compiling Go binaries..."
+          sleep 3
+          echo "Running lint and format checks..."
+          sleep 2
+          echo "Running unit tests..."
+          sleep 3
+          echo "Packaging build artifacts..."
+          sleep 2
+          echo "Build complete. Artifacts ready for deployment."
+
+  deploy-staging:
+    name: Deploy to Staging
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Simulate staging deployment
+        run: |
+          echo "=== [DEMO] Deploy to Staging ==="
+          echo "Downloading build artifacts..."
+          sleep 2
+          echo "Assuming deployment role in staging account..."
+          sleep 1
+          echo "Running CDK diff for stg..."
+          sleep 3
+          echo "Deploying stack to stg environment..."
+          sleep 4
+          echo "Running post-deploy migrations..."
+          sleep 2
+          echo "Running integration tests against stg..."
+          sleep 3
+          echo "Staging deployment complete and verified."
+
+  deploy-production:
+    name: Deploy to Production
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 5
+    steps:
+      - name: Simulate production deployment
+        run: |
+          echo "=== [DEMO] Deploy to Production ==="
+          echo "Approval received. Proceeding with production deployment."
+          echo "Downloading build artifacts..."
+          sleep 2
+          echo "Assuming deployment role in production account..."
+          sleep 1
+          echo "Running CDK diff for prd..."
+          sleep 3
+          echo "Deploying stack to prd environment..."
+          sleep 4
+          echo "Running post-deploy migrations..."
+          sleep 2
+          echo "Production deployment complete."
+          echo "Release pipeline finished successfully."
